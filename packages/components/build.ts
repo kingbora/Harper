@@ -3,9 +3,9 @@ import path from "path";
 import chokidar from "chokidar";
 import { rollup } from "rollup";
 import fs from "fs-extra";
-import typescript from "@rollup/plugin-typescript";
 import externals from "rollup-plugin-node-externals";
 import replace from "@rollup/plugin-replace";
+import ts from "rollup-plugin-ts";
 import rimraf from "rimraf";
 import log from "npmlog";
 
@@ -50,7 +50,7 @@ function toBuildFile(file: string) {
   return rollup({
     input: file,
     plugins: [
-      typescript(), 
+      ts(), 
       externals(),
       replace({
         __PLATFORM__: JSON.stringify(platform),
@@ -60,7 +60,8 @@ function toBuildFile(file: string) {
   }).then((bundle) => {
     const outPath = path.dirname(file).replace("src", "dist");
     return bundle.write({
-      file: outPath + "/index.js"
+      dir: outPath,
+      entryFileNames: "index.js"
     }).then(() => {
       const shortPath = path.relative(__dirname, path.resolve(__dirname, file));
       log.info(pkg.name, "file `%s` compile finished", shortPath);

@@ -1,23 +1,8 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "ES6",
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "jsx": "react",
-    "module": "esnext",
-    "importHelpers": true,
-    "resolveJsonModule": true,
-    "typeRoots": ["global.d.ts"],
-    "skipLibCheck": true,
-    "preserveSymlinks": true,
-  },
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
     }
   },
-  "include": ["packages"],
   "exclude": ["node_modules"],
 }

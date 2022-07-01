@@ -2,6 +2,8 @@
   "name": "@cus/controllers",
   "version": "0.0.0",
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "tsc --build",
+    "lint": "tsc --noEmit"
   }
 }

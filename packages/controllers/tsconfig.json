@@ -1,3 +1,18 @@
 {
-  "extends": "../../tsconfig.json"
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "ES6",
+    "strict": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "module": "esnext",
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "preserveSymlinks": true,
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "include": ["src", "global.d.ts"]
 }

@@ -1,0 +1,11 @@
+{
+  "name": "@cus/pages",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "build": "tsc --build"
+  },
+  "dependencies": {
+    "@cus/controllers": "workspace:^0.0.0"
+  }
+}
