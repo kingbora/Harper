@@ -4,21 +4,21 @@
 
 ### pnpm
 #### 命令集
-1、安装依赖包到工程的根目录下
+1. 安装依赖包到工程的根目录下
 `pnpm install react -w`
-2、开发依赖
+2. 开发依赖
 `pnpm install webpack -wD`
-3、给某个package单独安装指定依赖，`--filter`可指定具体name名，也可以是文件匹配规则
+3. 给某个package单独安装指定依赖，`--filter`可指定具体name名，也可以是文件匹配规则
 `pnpm add axios --filter @cus/pgk1`
-4、给某个package单独安装执行命令，`--filter`可指定具体name名，也可以是文件匹配规则
+4. 给某个package单独安装执行命令，`--filter`可指定具体name名，也可以是文件匹配规则
 `pnpm --filter "@cus/pkg1" build`
-5、若pkg1中将pkg2作为依赖进行安装
+5. 若pkg1中将pkg2作为依赖进行安装
 `pnpm install @cus/pkg2 -r --filter @cus/pkg1`
 
 ### changeset
 #### 初始化工程
-1、安装`pnpm add -Dw @changesets/cli`
-2、初始化`pnpm changeset init`
+1. 安装`pnpm add -Dw @changesets/cli`
+2. 初始化`pnpm changeset init`
 #### .changeset/config.json参数说明
 * changelog: changelog 生成方式
 * commit: 不要让 changeset 在 publish 的时候帮我们做 git add
@@ -43,6 +43,21 @@ type 必须是下面的其中之一：
 * ci: 持续集成的配置文件或者脚本的修改
 * chore: 杂项，其他不需要修改源代码或不需要修改测试代码的修改
 * revert: 撤销某次提交
+
+### Mac中husky提交报错问题
+#### npm not found
+新建`touch ~/.huskyrc`，若为系统node则
+```
+export PATH="/usr/local/bin/:$PATH"
+```
+若为nvm则
+```
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+```
+#### Husky pre commit hook exited with code 3 (error)
+使用nvm切换全局统一node，不能vscode command和全局command的node版本不一致
+`nvm use default`
 
 ### 要点说明
 * `"preinstall": "npx only-allow pnpm"`: 该命令会在运行`npm install`或`yarn install`时强制使用pnpm安装依赖
