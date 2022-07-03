@@ -1,10 +1,13 @@
 import React from "react";
+import { View, Text } from "react-native";
 import withIndexView from "@cus/controllers/dist/index";
-// import "./style.less";
+import styles from "./style";
 
 function IndexView() {
   return (
-    <div>哈哈哈，成功啦</div>
+    <View>
+      <Text>123</Text>
+    </View>
   );
 }
 

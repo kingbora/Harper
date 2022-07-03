@@ -56,12 +56,13 @@ function toBuildFile(file: string) {
         __PLATFORM__: JSON.stringify(platform),
         preventAssignment: true,
       }),
-    ]
+    ],
   }).then((bundle) => {
     const outPath = path.dirname(file).replace("src", "dist");
     return bundle.write({
       dir: outPath,
-      entryFileNames: "index.js"
+      entryFileNames: "index.js",
+      sourcemap: true,
     }).then(() => {
       const shortPath = path.relative(__dirname, path.resolve(__dirname, file));
       log.info(pkg.name, "file `%s` compile finished", shortPath);

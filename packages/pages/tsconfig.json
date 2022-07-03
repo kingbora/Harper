@@ -2,16 +2,17 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "target": "ES6",
+    "module": "commonjs",
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "module": "esnext",
     "importHelpers": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "preserveSymlinks": true,
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true,
   },
-  "include": ["src", "global.d.ts"]
+  "include": ["src", "global.d.ts", "types.d.ts"]
 }

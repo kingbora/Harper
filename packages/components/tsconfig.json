@@ -6,12 +6,13 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "jsx": "react",
-    "module": "esnext",
+    "module": "commonjs",
     "importHelpers": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "preserveSymlinks": true,
-    "declaration": true
+    "declaration": true,
+    "declarationMap": true,
   },
   "include": ["src", "global.d.ts"]
 }

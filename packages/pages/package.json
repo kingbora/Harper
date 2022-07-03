@@ -3,9 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
-    "build": "tsc --build"
+    "build": "cross-env NODE_ENV=production webpack",
+    "start": "cross-env NODE_ENV=development webpack-dev-server"
   },
   "dependencies": {
+    "@cus/components": "workspace:^0.0.0",
     "@cus/controllers": "workspace:^0.0.0"
   }
 }

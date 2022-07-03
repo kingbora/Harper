@@ -44,7 +44,7 @@ export const withController = function (SuperClass: PageControllerConstructor) {
       }
 
       render() {
-        return View;
+        return React.createElement(View);
       }
     }
 
