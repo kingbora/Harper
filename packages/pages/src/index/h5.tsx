@@ -1,10 +1,10 @@
 import React from "react";
 import withIndexView from "@cus/controllers/dist/index";
-// import "./style.less";
+import * as style from "./style.less";
 
 function IndexView() {
   return (
-    <div>哈哈哈，成功啦</div>
+    <div className={style.red}>哈哈哈，成功啦</div>
   );
 }
 

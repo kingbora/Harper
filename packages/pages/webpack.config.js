@@ -32,6 +32,52 @@ function resolve(relatedPath) {
   return path.resolve(__dirname, relatedPath);
 }
 
+const styleLoaders = [];
+
+if (isProd) {
+  styleLoaders.push(MiniCssExtractPlugin.loader);
+} else {
+  styleLoaders.push({
+    loader: "thread-loader",
+    options: {
+      worker: os.cpus().length - 1,
+    }
+  }, "style-loader");
+}
+
+styleLoaders.push(
+  {
+    loader: 'css-loader',
+    options: {
+      sourceMap: true,
+      esModule: true,
+      importLoaders: 2,
+      modules: {
+        namedExport: true,
+        localIdentName: isProd
+          ? "[hash:base64]"
+          : "[path][name]__[local]--[hash:base64:5]",
+        localIdentContext: resolve("src"),
+      }
+    }
+  },
+  {
+    loader: 'postcss-loader',
+    options: {
+      sourceMap: true,//为true,在样式追溯时，显示的是编写时的样式，为false，则为编译后的样式
+      postcssOptions: {
+        plugins: ["postcss-preset-env"]
+      }
+    }
+  },
+  {
+    loader: 'less-loader',
+    options: {
+      sourceMap: true,
+    }
+  }
+);
+
 module.exports = {
   mode: env,
   entry: {
@@ -93,8 +139,7 @@ module.exports = {
     minimizer: isProd ? [
       new TerserJSPlugin({ // 多进程压缩
         // 设置缓存目录
-        cache: path.resolve('.cache'),
-        parallel: 4,// 开启多进程压缩
+        parallel: os.cpus().length - 1,// 开启多进程压缩
         // sourceMap,
         terserOptions: {
           compress: {
@@ -112,32 +157,36 @@ module.exports = {
       test: /\.tsx?$/,
       exclude: /node_modules/,
       include: [resolve("src")],
-      loader: "happypack/loader",
-      options: {
-        id: "happyBabel"
-      }
+      use: ["happypack/loader?id=happyBabel"]
     }, {
       test: /\.js$/,
       enforce: "pre",
       use: ["source-map-loader"],
     }, {
-      test: /\.(css|less)$/,
+      test: /\.less$/,
       exclude: /node_modules/,
       include: [resolve("src")],
-      use: [{
-        loader: MiniCssExtractPlugin.loader
-      }, {
-        loader: "happypack/loader",
-        options: {
-          id: "happyStyle"
-        }
-      }]
-    }]
+      use: styleLoaders
+    }
+    ]
   },
   plugins: [
-    new MiniCssExtractPlugin({
-      filename: isProd ? "css/style.[contenthash].css" : "css/style.[hash:4].css",
-      chunkFilename: isProd ? "css/style.[contenthash].[id].css" : "css/style.[hash:4].[id].css",
+    new HappyPack({
+      //用id来标识 happypack处理那里类文件
+      id: 'happyBabel',
+      //如何处理  用法和loader 的配置一样
+      loaders: [{
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          cacheDirectory: true, // 启用缓存
+          presets: ['@babel/preset-env', '@babel/preset-react', '@babel/preset-typescript']
+        }
+      }],
+      //代表共享进程池，即多个 HappyPack 实例都使用同一个共享进程池中的子进程去处理任务，以防止资源占用过多。
+      threadPool: happyThreadPool,
+      //允许 HappyPack 输出日志
+      verbose: false,
     }),
     // 定义环境变量为开发环境
     new webpack.DefinePlugin({
@@ -147,67 +196,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: resolve("index.html"),
     }),
-    new HappyPack({
-      //用id来标识 happypack处理那里类文件
-      id: 'happyBabel',
-      //如何处理  用法和loader 的配置一样
-      loaders: [{
-        loader: 'babel-loader',
-        options: {
-          // babelrc: true,
-          cacheDirectory: true, // 启用缓存
-          presets: ['@babel/preset-env', "@babel/preset-react", "@babel/preset-typescript"]
-        }
-      }],
-      //代表共享进程池，即多个 HappyPack 实例都使用同一个共享进程池中的子进程去处理任务，以防止资源占用过多。
-      threadPool: happyThreadPool,
-      //允许 HappyPack 输出日志
-      verbose: false,
-    }),
-    new HappyPack({
-      //用id来标识 happypack处理那里类文件
-      id: 'happyStyle',
-      //如何处理  用法和loader 的配置一样
-      loaders: [
-        {
-          loader: 'css-loader',
-          options: {
-            importLoaders: 2, // 之前有2个loaders
-            // modules: true, // 启用cssModules
-            sourceMap: true,
-            modules: {
-              localIdentName: isProd
-              ? "_[hash:base64]"
-              : "[path][name]__[local]"
-            }
-          }
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: true,//为true,在样式追溯时，显示的是编写时的样式，为false，则为编译后的样式
-            plugins: [require("autoprefixer")]
-          }
-        },
-        {
-          loader: 'less-loader',
-          options: {
-            sourceMap: true,
-          }
-        }
-      ],
-      //代表共享进程池，即多个 HappyPack 实例都使用同一个共享进程池中的子进程去处理任务，以防止资源占用过多。
-      threadPool: happyThreadPool,
-      //允许 HappyPack 输出日志
-      verbose: false,
-    }),
-    new CleanWebpackPlugin(),
     // new webpack.WatchIgnorePlugin({
     //   paths: [
     //     /css\.d\.ts$/
     //   ]
     // })
-  ],
+  ].concat(isProd ? [new MiniCssExtractPlugin({
+    filename: isProd ? "css/style.[contenthash].css" : "css/style.[hash:4].css",
+    chunkFilename: isProd ? "css/style.[contenthash].[id].css" : "css/style.[hash:4].[id].css",
+  }), new CleanWebpackPlugin()] : []),
   devServer: {
     historyApiFallback: true,
     port: PORT,
