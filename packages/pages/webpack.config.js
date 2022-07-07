@@ -32,51 +32,58 @@ function resolve(relatedPath) {
   return path.resolve(__dirname, relatedPath);
 }
 
-const styleLoaders = [];
+function getStyleLoaders(module) {
+  const styleLoaders = [];
 
-if (isProd) {
-  styleLoaders.push(MiniCssExtractPlugin.loader);
-} else {
-  styleLoaders.push({
-    loader: "thread-loader",
-    options: {
-      worker: os.cpus().length - 1,
-    }
-  }, "style-loader");
-}
-
-styleLoaders.push(
-  {
-    loader: 'css-loader',
-    options: {
-      sourceMap: true,
-      esModule: true,
-      importLoaders: 2,
-      modules: {
-        namedExport: true,
-        localIdentName: isProd
-          ? "[hash:base64]"
-          : "[path][name]__[local]--[hash:base64:5]",
-        localIdentContext: resolve("src"),
+  if (isProd) {
+    styleLoaders.push(MiniCssExtractPlugin.loader);
+  } else {
+    styleLoaders.push({
+      loader: "thread-loader",
+      options: {
+        worker: os.cpus().length - 1,
       }
-    }
-  },
-  {
-    loader: 'postcss-loader',
-    options: {
-      sourceMap: true,//为true,在样式追溯时，显示的是编写时的样式，为false，则为编译后的样式
-      postcssOptions: {
-        plugins: ["postcss-preset-env"]
-      }
-    }
-  },
-  {
-    loader: 'less-loader',
-    options: {
-      sourceMap: true,
-    }
+    }, "style-loader");
   }
-);
+
+  styleLoaders.push(
+    {
+      loader: 'css-loader',
+      // TODO: css module source map not work correct
+      options: module ? {
+        sourceMap: true,
+        esModule: true,
+        importLoaders: 2,
+        modules: {
+          // namedExport: true, // 开启后不支持默认default export， import style from "./style.less"
+          localIdentName: isProd
+            ? "[hash:base64]"
+            : "[path][name]__[local]--[hash:base64:5]",
+          localIdentContext: resolve("src"),
+        }
+      } : {
+        sourceMap: true,
+        importLoaders: 2,
+      }
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        sourceMap: true,//为true,在样式追溯时，显示的是编写时的样式，为false，则为编译后的样式
+        postcssOptions: {
+          plugins: ["postcss-preset-env"]
+        }
+      }
+    },
+    {
+      loader: 'less-loader',
+      options: {
+        sourceMap: true,
+      }
+    }
+  );
+  return styleLoaders;
+}
 
 module.exports = {
   mode: env,
@@ -164,9 +171,13 @@ module.exports = {
       use: ["source-map-loader"],
     }, {
       test: /\.less$/,
-      exclude: /node_modules/,
+      exclude: [/node_modules/, /\.module\.less$/],
       include: [resolve("src")],
-      use: styleLoaders
+      use: getStyleLoaders()
+    }, {
+      test: /\.module\.less$/,
+      include: [resolve("src")],
+      use: getStyleLoaders(true)
     }
     ]
   },
