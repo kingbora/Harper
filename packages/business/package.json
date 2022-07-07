@@ -1,13 +1,10 @@
 {
-  "name": "@cus/controllers",
+  "name": "@cus/business",
   "version": "0.0.0",
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1",
     "build": "tsc --build",
     "watch": "tsc --watch",
     "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@cus/business": "workspace:^0.0.0"
   }
 }

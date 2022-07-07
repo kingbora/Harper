@@ -143,13 +143,18 @@ importers:
     specifiers: {}
 
   packages/controllers:
-    specifiers: {}
+    specifiers:
+      '@cus/business': workspace:^0.0.0
+    dependencies:
+      '@cus/business': link:../business
 
   packages/pages:
     specifiers:
+      '@cus/business': workspace:^0.0.0
       '@cus/components': workspace:^0.0.0
       '@cus/controllers': workspace:^0.0.0
     dependencies:
+      '@cus/business': link:../business
       '@cus/components': link:../components
       '@cus/controllers': link:../controllers
 

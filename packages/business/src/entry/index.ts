@@ -1,4 +1,4 @@
-import { RouterType } from "./types";
+import { RouterType } from "../types";
 
 let createEntry: (routes: RouterType[]) => void;
 

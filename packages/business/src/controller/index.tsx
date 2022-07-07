@@ -1,22 +1,21 @@
 import React from "react";
+import { CtrlContext } from "../context";
 
 interface PageControllerConstructor {
   new (): PageController;
-  pageDidMount?: () => void;
 }
 
 function mixins(target: any, source: any) {
   const properties: (string | symbol)[] = [];
-  const sourcePrototype = Object.getPrototypeOf(source);
+  const sourcePrototype = source.prototype;
   // 合并
-  properties.concat(Object.getOwnPropertyNames(sourcePrototype));
-  properties.concat(Object.getOwnPropertySymbols(sourcePrototype));
+  properties.push(...Object.getOwnPropertyNames(sourcePrototype), ...Object.getOwnPropertySymbols(sourcePrototype));
   properties.forEach((prop) => {
     if (typeof prop === "string") {
       if (prop.match(/^(?:initializer|constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
-        if (prop === "constructor") {
-          sourcePrototype[prop].apply(target);
-        }
+        // if (prop === "constructor") {
+        //   sourcePrototype[prop].apply(target);
+        // }
         return;
       }
     }
@@ -44,7 +43,11 @@ export const withController = function (SuperClass: PageControllerConstructor) {
       }
 
       render() {
-        return React.createElement(View);
+        return (
+          <CtrlContext.Provider value={this}>
+            {React.createElement(View)}
+          </CtrlContext.Provider>
+        );
       }
     }
 

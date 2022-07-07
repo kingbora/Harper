@@ -1,6 +1,6 @@
 import React from "react";
 import { NativeRouter, useRoutes } from "react-router-native";
-import { RouterType } from "./types";
+import { RouterType } from "../types";
 
 interface AppProps {
   routes: RouterType[];

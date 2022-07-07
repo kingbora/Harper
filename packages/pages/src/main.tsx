@@ -1,6 +1,6 @@
 import React from "react";
-import { RouterType } from "@cus/controllers/dist/base/types";
-import createEntry from "@cus/controllers/dist/base/createEntry";
+import { RouterType } from "@cus/business/dist/types";
+import createEntry from "@cus/business/dist/entry";
 import IndexPage from "./index/index";
 
 const routes: RouterType[] = [{

@@ -49,7 +49,6 @@ function getStyleLoaders(module) {
   styleLoaders.push(
     {
       loader: 'css-loader',
-      // TODO: css module source map not work correct
       options: module ? {
         sourceMap: true,
         esModule: true,

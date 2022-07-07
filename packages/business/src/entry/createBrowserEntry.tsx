@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import { Routes, Route } from "react-router";
-import { RouterType } from "./types";
+import { RouterType } from "../types";
 
 const root = document.getElementById("root");
 

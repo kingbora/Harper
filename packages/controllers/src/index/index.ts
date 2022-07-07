@@ -1,7 +1,9 @@
-import PageController, { withController } from "../base/controller";
+import PageController, { withController } from "@cus/business/dist/controller";
 
-class IndexController extends PageController {
-  
+export class IndexController extends PageController {
+  markIt() {
+    console.log(123);
+  }
 }
 
 export default withController(IndexController);
