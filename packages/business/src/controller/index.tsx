@@ -1,47 +1,31 @@
 import React from "react";
 import { CtrlContext } from "../context";
 
-interface PageControllerConstructor {
-  new (): PageController;
+let BasePageController: PageControllerConstructor;
+
+if (__PLATFORM__ === "native") {
+  BasePageController = require("./native").default;
+} else {
+  BasePageController = require("./h5").default;
 }
 
-function mixins(target: any, source: any) {
-  const properties: (string | symbol)[] = [];
-  const sourcePrototype = source.prototype;
-  // 合并
-  properties.push(...Object.getOwnPropertyNames(sourcePrototype), ...Object.getOwnPropertySymbols(sourcePrototype));
-  properties.forEach((prop) => {
-    if (typeof prop === "string") {
-      if (prop.match(/^(?:initializer|constructor|prototype|arguments|caller|name|bind|call|apply|toString|length)$/)) {
-        // if (prop === "constructor") {
-        //   sourcePrototype[prop].apply(target);
-        // }
-        return;
-      }
-    }
-    const descriptor = Object.getOwnPropertyDescriptor(sourcePrototype, prop);
-    if (descriptor) {
-      Object.defineProperty(target, prop, descriptor);
-    }
-  });
+interface PageControllerConstructor {
+  new (): React.Component;
+  pageDidMount?: () => void;
+  pageWillUnmount?: () => void;
+  pageDidShow?: () => void;
+  pageDidHide?: () => void;
 }
 
 export const withController = function (SuperClass: PageControllerConstructor) {
   return function (View: React.ComponentType): React.ComponentClass {
-    class ViewTemplete extends React.Component {
-      constructor(props: any) {
-        super(props);
-        mixins(this, SuperClass);
-      }
-
+    class ViewTemplete extends SuperClass {
       componentDidMount() {
-        (this as unknown as ViewTemplete & PageController).pageDidMount?.();
+        (this as unknown as PageControllerConstructor).pageDidMount?.();
       }
-
       componentWillUnmount() {
-        (this as unknown as ViewTemplete & PageController).pageWillUnmount?.();
+        (this as unknown as PageControllerConstructor).pageWillUnmount?.();
       }
-
       render() {
         return (
           <CtrlContext.Provider value={this}>
@@ -55,9 +39,4 @@ export const withController = function (SuperClass: PageControllerConstructor) {
   };
 };
 
-export default class PageController {
-  pageDidMount() {}
-  pageWillUnmount() {}
-  pageDidShow() {}
-  pageDidHide() {}
-}
+export class PageController extends BasePageController {}
